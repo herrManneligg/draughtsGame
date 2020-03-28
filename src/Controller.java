@@ -1,37 +1,41 @@
-
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 
-public class Controller implements ActionListener{
 
+public class Controller implements ActionListener {
+
+	private Pieces token;
 	private View gameView;
-	
-	public Controller() {
-		this.gameView = new View(this);
-		gameView.setVisible(true);
-	}
-	
-	public void actionPerformed(ActionEvent e) {
-		 if(e.getSource() == gameView.get_square_button()) {
-			 move((JButton)e.getSource());
-//            ((JButton)e.getSource());
-        }
-	}
-	
-	
-	public void move(JButton jbutton) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				jbutton.setBackground(Color.RED);
-				
-			}
-			
-		});
+
+	public Controller(View view) {
+		gameView = view;
+
 	}
 
+	public void actionPerformed(ActionEvent e) {
+		
+		JButton btn = ((JButton) e.getSource());
+		System.out.println("Move: " + "r: " + btn.getClientProperty("row") + ", c: " + btn.getClientProperty("column") + "\n");
+
+		if (e.getSource() instanceof JButton && ((JButton) e.getSource()).getIcon() != null) {
+			move((JButton) e.getSource());
+		} else if (e.getSource() instanceof JButton && ((JButton) e.getSource()).getIcon() == null) {
+			place((JButton) e.getSource());
+		}
+
+		if (e.getSource() instanceof JButton && ((JButton) e.getSource()).getText().equals("Play")) {
+			gameView.startGame();
+		}
+	}
+
+	private void place(JButton jbutton) {
+		jbutton.setIcon(gameView.token.getRedQueen());
+	}
+
+	public void move(JButton jbutton) {
+
+		jbutton.setIcon(null);			
+	}
 }

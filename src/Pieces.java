@@ -16,23 +16,11 @@ public class Pieces {
 	ImageIcon imageWhiteQueen;
 	ImageIcon imageRedQueen;
 	
-	JLabel red;
-	JLabel white;
-	JLabel redQueen;
-	JLabel whiteQueen;
-	
-	ImageIcon empty;
-	
 	public Pieces() {
 		
-		empty = new ImageIcon("");
-	
 		imageWhite = new ImageIcon("white.png");
-		
 		imageRedQueen = new ImageIcon("Red_king.png");
-		
 		imageRed = new ImageIcon("red.png");
-		
 		imageWhiteQueen = new ImageIcon("white_king.png");
 	}
 	
@@ -50,9 +38,5 @@ public class Pieces {
 	
 	public ImageIcon getWhite() {
 		return this.imageWhite;
-	}
-	
-	public ImageIcon getEmpty() {
-		return this.empty;
 	}
 }

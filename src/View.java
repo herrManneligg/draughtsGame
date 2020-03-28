@@ -1,13 +1,7 @@
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
-
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 public class View extends JFrame {
 
@@ -19,13 +13,13 @@ public class View extends JFrame {
 	public JButton resign = new JButton("Resign");
 	public JButton connect = new JButton("Connect");
 	public Pieces token = new Pieces();
-	
+
 	public Controller control;
 
-	public View(Controller gc) {
+	public View() {
 		initialize();
 		startGame();
-		this.control = gc;
+		this.control = new Controller(this);
 	}
 
 	public void initialize() {
@@ -39,17 +33,21 @@ public class View extends JFrame {
 
 		for (int i = 0; i < squares.length; i++) {
 			for (int j = 0; j < squares[i].length; j++) {
+
 				JButton button = new JButton();
 				button.setPreferredSize(new Dimension(9, 9));
 				button.setMargin(buttonMargin);
+
 				if ((j % 2 == 1 && i % 2 == 1) || (j % 2 == 0 && i % 2 == 0)) {
 					button.setBackground(Color.WHITE);
 				} else {
 					button.setBackground(Color.BLACK);
 				}
 				button.setVisible(true);
-				button.addActionListener(control);
 				squares[i][j] = button;
+				squares[i][j].putClientProperty("row", i);
+				squares[i][j].putClientProperty("column", j);
+				button.addActionListener(new Controller(this));
 			}
 		}
 
@@ -73,40 +71,35 @@ public class View extends JFrame {
 		tools.add(resign);
 		this.add(tools, BorderLayout.PAGE_START);
 	}
-	
-	
-/*
- * 	Filling the board with the pieces. Using invokeLater to rendering the pieces images.  
- */
+
+	/*
+	 * Filling the board with the pieces. Using invokeLater to rendering the pieces
+	 * images.
+	 */
 	public void startGame() {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				
-				for (int i = 0; i < 3; i++) {
-					for (int j = 0; j < 8; j++) {
-						if (i % 2 == 0 && j % 2 != 0) {
-							squares[i][j].setIcon(token.getRed());
-						} else if (i % 2 != 0 && j % 2 == 0) {
-							squares[i][j].setIcon(token.getRed());
-						} else {
-							squares[i + 5][j].setIcon(token.getWhite());
-						}
-					}
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (i % 2 == 0 && j % 2 != 0) {
+					squares[i][j].setIcon(token.getRed());
+				} else if (i % 2 != 0 && j % 2 == 0) {
+					squares[i][j].setIcon(token.getRed());
+				} else {
+					squares[i + 5][j].setIcon(token.getWhite());
 				}
 			}
-		});
+		}
 	}
-	
 
-	
-	public Object get_square_button() {
+
+	public JButton[][] get_square_button() {
 		return squares;
 	}
 	
-	
-
 	public static void main(String[] args) throws IOException {
-		Controller gameControl = new Controller();
-	}
 
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				new View();
+			}});
+	}	
 }
