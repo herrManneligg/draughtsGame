@@ -6,20 +6,21 @@ import javax.swing.*;
 public class View extends JFrame {
 
 	public JPanel window = new JPanel();
-	public JButton[][] squares = new JButton[8][8];
+	public SquareButton[][] squares = new SquareButton[8][8];
 	public JPanel board = new JPanel(new GridLayout(8, 8));
 	public JToolBar tools = new JToolBar();
 	public JButton play = new JButton("Play");
 	public JButton resign = new JButton("Resign");
 	public JButton connect = new JButton("Connect");
-	public Pieces token = new Pieces();
+	public JLabel infoScreen;
+	public Model token = new Model();
 
 	public Controller control;
 
 	public View() {
+		this.control = new Controller(this);
 		initialize();
 		startGame();
-		this.control = new Controller(this);
 	}
 
 	public void initialize() {
@@ -34,7 +35,7 @@ public class View extends JFrame {
 		for (int i = 0; i < squares.length; i++) {
 			for (int j = 0; j < squares[i].length; j++) {
 
-				JButton button = new JButton();
+				SquareButton button = new SquareButton(i, j);
 				button.setPreferredSize(new Dimension(9, 9));
 				button.setMargin(buttonMargin);
 
@@ -45,9 +46,7 @@ public class View extends JFrame {
 				}
 				button.setVisible(true);
 				squares[i][j] = button;
-				squares[i][j].putClientProperty("row", i);
-				squares[i][j].putClientProperty("column", j);
-				button.addActionListener(new Controller(this));
+				button.addActionListener(this.control);
 			}
 		}
 
@@ -67,24 +66,41 @@ public class View extends JFrame {
 		tools.setFloatable(false);
 		tools.setBackground(Color.darkGray);
 
+		infoScreen = new JLabel("Let's play!");
+		infoScreen.setForeground(Color.white);
 		tools.add(play);
 		tools.add(resign);
+		tools.add(connect);
+		tools.addSeparator();
+		tools.add(infoScreen, BorderLayout.PAGE_END);
 		this.add(tools, BorderLayout.PAGE_START);
 	}
 
-	/*
-	 * Filling the board with the pieces. Using invokeLater to rendering the pieces
-	 * images.
-	 */
+/*
+* 	Filling the board with the pieces. Using invokeLater to rendering the pieces
+*	images.
+*/
 	public void startGame() {
+//		for (int i = 0; i < 3; i++) {
+//			for (int j = 0; j < 8; j++) {
+//				if (i % 2 == 0 && j % 2 != 0) {
+//					squares[i][j].setIcon(token.getRed());
+//				} else if (i % 2 != 0 && j % 2 == 0) {
+//					squares[i][j].setIcon(token.getRed());
+//				} else {
+//					squares[i + 5][j].setIcon(token.getWhite());
+//				}
+//			}
+//		}
+//	}
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (i % 2 == 0 && j % 2 != 0) {
-					squares[i][j].setIcon(token.getRed());
+					squares[i][j].setToken(new Men(0));
 				} else if (i % 2 != 0 && j % 2 == 0) {
-					squares[i][j].setIcon(token.getRed());
+					squares[i][j].setToken(new Men(0));
 				} else {
-					squares[i + 5][j].setIcon(token.getWhite());
+					squares[i + 5][j].setToken(new Men(2));
 				}
 			}
 		}
@@ -101,5 +117,5 @@ public class View extends JFrame {
 			public void run() {
 				new View();
 			}});
-	}	
+	}
 }
