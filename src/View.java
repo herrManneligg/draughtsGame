@@ -19,8 +19,8 @@ public class View extends JFrame {
 
 	public View() {
 		this.control = new Controller(this);
+		createBoard();
 		initialize();
-		startGame();
 	}
 
 	public void initialize() {
@@ -29,32 +29,6 @@ public class View extends JFrame {
 
 		board.setBorder(BorderFactory.createStrokeBorder(new BasicStroke(7.0f)));
 		board.setSize(700, 700);
-
-		Insets buttonMargin = new Insets(0, 0, 0, 0);
-
-		for (int i = 0; i < squares.length; i++) {
-			for (int j = 0; j < squares[i].length; j++) {
-
-				SquareButton button = new SquareButton(i, j);
-				button.setPreferredSize(new Dimension(9, 9));
-				button.setMargin(buttonMargin);
-
-				if ((j % 2 == 1 && i % 2 == 1) || (j % 2 == 0 && i % 2 == 0)) {
-					button.setBackground(Color.WHITE);
-				} else {
-					button.setBackground(Color.BLACK);
-				}
-				button.setVisible(true);
-				squares[i][j] = button;
-				button.addActionListener(this.control);
-			}
-		}
-
-		for (int i = 0; i < squares.length; i++) {
-			for (int j = 0; j < squares[i].length; j++) {
-				board.add(squares[i][j]);
-			}
-		}
 
 		this.add(board);
 
@@ -74,25 +48,44 @@ public class View extends JFrame {
 		tools.addSeparator();
 		tools.add(infoScreen, BorderLayout.PAGE_END);
 		this.add(tools, BorderLayout.PAGE_START);
+		addInitialTokens();
 	}
 
 /*
-* 	Filling the board with the pieces. Using invokeLater to rendering the pieces
-*	images.
+* 
 */
-	public void startGame() {
-//		for (int i = 0; i < 3; i++) {
-//			for (int j = 0; j < 8; j++) {
-//				if (i % 2 == 0 && j % 2 != 0) {
-//					squares[i][j].setIcon(token.getRed());
-//				} else if (i % 2 != 0 && j % 2 == 0) {
-//					squares[i][j].setIcon(token.getRed());
-//				} else {
-//					squares[i + 5][j].setIcon(token.getWhite());
-//				}
-//			}
-//		}
-//	}
+	
+	private void createBoard() {
+		Insets buttonMargin = new Insets(0, 0, 0, 0);
+
+		for (int i = 0; i < squares.length; i++) {
+			for (int j = 0; j < squares[i].length; j++) {
+
+				SquareButton button = new SquareButton(i, j);
+				button.setPreferredSize(new Dimension(9, 9));
+				button.setMargin(buttonMargin);
+
+				if ((j % 2 == 1 && i % 2 == 1) || (j % 2 == 0 && i % 2 == 0)) {
+					button.setBackground(Color.WHITE);
+					button.setEnabled(false);
+				} else {
+					button.setBackground(Color.BLACK);
+				}
+				button.setVisible(true);
+				squares[i][j] = button;
+				button.addActionListener(this.control);
+			}
+		}
+
+		for (int i = 0; i < squares.length; i++) {
+			for (int j = 0; j < squares[i].length; j++) {
+				board.add(squares[i][j]);
+			}
+		}
+	}
+	
+	public void addInitialTokens() {
+
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (i % 2 == 0 && j % 2 != 0) {
@@ -100,12 +93,11 @@ public class View extends JFrame {
 				} else if (i % 2 != 0 && j % 2 == 0) {
 					squares[i][j].setToken(new Men(0));
 				} else {
-					squares[i + 5][j].setToken(new Men(2));
+					squares[i + 5][j].setToken(new Men(1));
 				}
 			}
 		}
 	}
-
 
 	public JButton[][] get_square_button() {
 		return squares;

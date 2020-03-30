@@ -17,32 +17,35 @@ public class Men implements Token{
 	public void setImage() {
 		if (this.colour == 0) {
 			this.menIcon = model.getRed();
-		} else if (this.colour == 2) {
+		} else if (this.colour == 1) {
 			this.menIcon = model.getWhite();
 		}
 	}
+	
+	public int getColour() {
+		return colour;
+	}
 
-	@Override
-	public boolean legalMove() {
-		// TODO Auto-generated method stub
-		return false;
+	public void setColour(int colour) {
+		this.colour = colour;
 	}
 
 	@Override
-	public boolean canKill() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isNormalMove(SquareButton prevPosition, SquareButton nextPosition) {
+		return (nextPosition.getRow() == rowDirection() + prevPosition.getRow() && (Math.abs(prevPosition.getColumn() - nextPosition.getColumn())) == 1) ? true : false;
 	}
 
-//	@Override
-//	public void delete() {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	@Override
+	public boolean isJumpMove(SquareButton prevPosition, SquareButton nextPosition) {
+		return (nextPosition.getRow() == rowDirection()*2 + prevPosition.getRow() && (Math.abs(prevPosition.getColumn() - nextPosition.getColumn())) == 2) ? true : false;
+	}
 
 	@Override
 	public ImageIcon getTokenIcon() {
 		return this.menIcon;
 	}
 	
+	public int rowDirection() {
+		return this.colour == 0 ? 1 : -1;
+	}
 }

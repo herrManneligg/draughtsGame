@@ -29,13 +29,8 @@ public class SquareButton extends JButton {
 	}
 	
 	public void setToken(Token token) {
-		if (this.token == null) {
-			this.token = token;
-			setSquareIcon();
-		} else {
-//			Needs to be refactored. The intention here is to delete the token if another token jumps over this one.
-			removeToken();
-		}
+		this.token = token;
+		setSquareIcon();
 	}
 	
 	public Token getToken() {
@@ -51,7 +46,7 @@ public class SquareButton extends JButton {
 	}
 	
 	public void removeToken() {
-		this.token = null;
 		this.setIcon(null);
+		this.token = null;
 	}
 }
