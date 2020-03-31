@@ -6,7 +6,8 @@ public class SquareButton extends JButton {
 	int column;
 	Token token;
 	
-	public SquareButton(int x, int y) {
+	public SquareButton(String txt, int x, int y) {
+		super(txt);
 		this.row = x;
 		this.column = y;
 		this.token = null;
@@ -38,7 +39,7 @@ public class SquareButton extends JButton {
 	}
 
 	public boolean isOccupied() {
-		return this.token == null ? false : true;
+		return this.token != null ? true : false;
 	}
 	
 	public void setSquareIcon() {

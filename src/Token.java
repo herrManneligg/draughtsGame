@@ -5,5 +5,6 @@ interface Token {
 	boolean isJumpMove(SquareButton prevPosition, SquareButton nextPosition);
 	int getColour();
 	int rowDirection();
+	int getType();
 	ImageIcon getTokenIcon();
 }

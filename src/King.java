@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ImageIcon;
 
 public class King implements Token {
@@ -43,13 +45,18 @@ public class King implements Token {
 
 	@Override
 	public int getColour() {
-		return colour;
+		return this.colour == 2 ? 0 : 1;
 	}
 
+	public int getType() {
+		return this.colour;
+	}
 	@Override
 	public int rowDirection() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+
 
 }

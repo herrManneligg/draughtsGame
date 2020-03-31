@@ -4,7 +4,6 @@ public class Men implements Token{
 	
 	Model model;
 	ImageIcon menIcon;
-
 	int colour;
 
 	public Men(int type) {
@@ -23,7 +22,11 @@ public class Men implements Token{
 	}
 	
 	public int getColour() {
-		return colour;
+		return this.colour == 0 ? 0 : 1;
+	}
+	
+	public int getType() {
+		return this.colour;
 	}
 
 	public void setColour(int colour) {
@@ -44,7 +47,7 @@ public class Men implements Token{
 	public ImageIcon getTokenIcon() {
 		return this.menIcon;
 	}
-	
+
 	public int rowDirection() {
 		return this.colour == 0 ? 1 : -1;
 	}
