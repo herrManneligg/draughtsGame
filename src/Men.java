@@ -1,3 +1,5 @@
+import java.util.List;
+
 import javax.swing.ImageIcon;
 
 public class Men implements Token{
@@ -50,5 +52,17 @@ public class Men implements Token{
 
 	public int rowDirection() {
 		return this.colour == 0 ? 1 : -1;
+	}
+
+	@Override
+	public List<SquareButton> checkPosibleMoves(SquareButton pieceLocation, View gameView) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SquareButton hasAKill(SquareButton squareButton) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

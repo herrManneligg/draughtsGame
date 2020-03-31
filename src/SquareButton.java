@@ -12,6 +12,13 @@ public class SquareButton extends JButton {
 		this.column = y;
 		this.token = null;
 	}
+	
+	public SquareButton(int x, int y) {
+//		super(txt);
+		this.row = x;
+		this.column = y;
+		this.token = null;
+	}
 
 	public int getRow() {
 		return row;

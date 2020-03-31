@@ -61,7 +61,8 @@ public class View extends JFrame {
 		for (int i = 0; i < squares.length; i++) {
 			for (int j = 0; j < squares[i].length; j++) {
 
-				SquareButton button = new SquareButton("("+i+", "+j+")", i, j);
+//				SquareButton button = new SquareButton("("+i+", "+j+")", i, j);
+				SquareButton button = new SquareButton(i, j);
 				button.setPreferredSize(new Dimension(9, 9));
 				button.setMargin(buttonMargin);
 
