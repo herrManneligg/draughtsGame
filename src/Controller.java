@@ -83,13 +83,14 @@ public class Controller implements ActionListener {
 					
 //					Adding implementation for King's kills - Men will be implemented in the same way
 					if (this.prevSquare.getToken().hasAKill(squareButton) != null) {
-						System.out.println("Hoooliiii");
-						prevSquare.getToken().hasAKill(squareButton).removeToken();
+						this.prevSquare.getToken().hasAKill(squareButton).removeToken();
+						this.prevSquare.getToken().getKillerMovemenets().clear();
+					} else if (!this.prevSquare.getToken().getKillerMovemenets().isEmpty()) {
+						this.prevSquare.getToken().getKillerMovemenets().clear();
 					}
 					
 					place(squareButton);
 					move(this.prevSquare);
-					
 				
 					if (possibleTokenMovements != null) {
 						for(int i = 0; i < possibleTokenMovements.size(); i++) {
@@ -98,14 +99,11 @@ public class Controller implements ActionListener {
 						possibleTokenMovements = null;
 					}
 				} 
-				
-				 
-
 			}
-			if (squareButton.getToken() != null && squareButton.getToken().getColour() < 2) {
-				if (squareButton.getToken().getColour() == 0 && squareButton.getRow() == 7) {
+			if (squareButton.getToken() != null && squareButton.getToken().getType() < 2) {
+				if (squareButton.getToken().getType() == 0 && squareButton.getRow() == 7) {
 					placeKing(squareButton, 2);
-				} else if (squareButton.getToken().getColour() == 1 && squareButton.getRow() == 0) {
+				} else if (squareButton.getToken().getType() == 1 && squareButton.getRow() == 0) {
 					placeKing(squareButton, 3);
 				}
 			}

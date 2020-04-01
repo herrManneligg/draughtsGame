@@ -6,15 +6,7 @@ public class SquareButton extends JButton {
 	int column;
 	Token token;
 	
-	public SquareButton(String txt, int x, int y) {
-		super(txt);
-		this.row = x;
-		this.column = y;
-		this.token = null;
-	}
-	
 	public SquareButton(int x, int y) {
-//		super(txt);
 		this.row = x;
 		this.column = y;
 		this.token = null;

@@ -51,9 +51,6 @@ public class View extends JFrame {
 		addInitialTokens();
 	}
 
-/*
-* 
-*/
 	
 	private void createBoard() {
 		Insets buttonMargin = new Insets(0, 0, 0, 0);
@@ -61,8 +58,7 @@ public class View extends JFrame {
 		for (int i = 0; i < squares.length; i++) {
 			for (int j = 0; j < squares[i].length; j++) {
 
-				SquareButton button = new SquareButton("("+i+", "+j+")", i, j);
-//				SquareButton button = new SquareButton(i, j);
+				SquareButton button = new SquareButton(i, j);
 				button.setPreferredSize(new Dimension(9, 9));
 				button.setMargin(buttonMargin);
 
@@ -94,12 +90,10 @@ public class View extends JFrame {
 				} else if (i % 2 != 0 && j % 2 == 0) {
 					squares[i][j].setToken(new Men(0));
 				} else {
-//					squares[i + 5][j].setToken(new Men(1));
-					squares[i + 5][j].setToken(new King(3));
+					squares[i + 5][j].setToken(new Men(1));
 				}
 			}
 		}
-//		squares[0][1].setToken(new King(2));
 	}
 
 	public JButton[][] get_square_button() {

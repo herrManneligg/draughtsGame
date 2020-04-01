@@ -49,6 +49,14 @@ public class Men implements Token {
 	public int rowDirection() {
 		return this.colour == 0 ? 1 : -1;
 	}
+	
+	public HashMap<SquareButton, SquareButton> getKillerMovemenets() {
+		return killerMovemenets;
+	}
+	
+	public void setKillerMovemenets(HashMap<SquareButton, SquareButton> killerMovemenets) {
+		this.killerMovemenets = killerMovemenets;
+	}
 
 	@Override
 	public List<SquareButton> checkPosibleMoves(SquareButton pieceLocation, View gameView) {
