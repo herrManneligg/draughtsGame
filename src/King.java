@@ -31,18 +31,6 @@ public class King implements Token {
 	}
 
 	@Override
-	public boolean isNormalMove(SquareButton prevPosition, SquareButton nextPosition) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isJumpMove(SquareButton prevPosition, SquareButton nextPosition) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
 	public ImageIcon getTokenIcon() {
 		return this.kingIcon;
 	}
@@ -61,8 +49,8 @@ public class King implements Token {
 		return 0;
 	}
 	
-	public SquareButton hasAKill(SquareButton killingPosition) {
-		return this.killerMovemenets.containsKey(killingPosition) ? this.killerMovemenets.get(killingPosition) : null;
+	public SquareButton hasAKill(SquareButton iskillingPosition) {
+		return this.killerMovemenets.containsKey(iskillingPosition) ? this.killerMovemenets.get(iskillingPosition) : null;
 	}
 	
 	public List<SquareButton> checkPosibleMoves(SquareButton pieceLocation, View gameView) {

@@ -11,7 +11,7 @@ public class Controller implements ActionListener {
 
 	private View gameView;
 	private SquareButton prevSquare;
-	private List<SquareButton> possibleKingMoves;
+	private List<SquareButton> possibleTokenMovements;
 
 	int row;
 	int column;
@@ -37,28 +37,27 @@ public class Controller implements ActionListener {
 /*
  * 			The player changes his mind and selects a different token.
  */
-				if (this.prevSquare != null && (squareButton.getToken().getColour() == this.prevSquare.getToken().getColour())) {
+				if (this.prevSquare != null) {
 					this.prevSquare.setBackground(Color.black);
+					this.prevSquare = null;
 				}
 /*
  * 			If the player previously selected a king, the possible moves
  * 			are showed in green. This turns the squares back to black and
  * 			resets the possible moves list for the king.
  */
-				if (possibleKingMoves != null) {
+				if (possibleTokenMovements != null) {
 					
-					for(int i = 0; i < possibleKingMoves.size(); i++) {
-						possibleKingMoves.get(i).setBackground(Color.black);
+					for(int i = 0; i < possibleTokenMovements.size(); i++) {
+						this.possibleTokenMovements.get(i).setBackground(Color.black);
 					}
-					possibleKingMoves = null;
+					
 				}
 /*
- * 			If the player selects a King, the possible moves are displayed
- * 			and stored in a variable.
+ * 			///////////////////////////////////////////////////////////
  */
-				if ((squareButton.getToken().getType() > 1)) {
-					possibleKingMoves = squareButton.getToken().checkPosibleMoves(squareButton, this.gameView);
-				}
+				this.possibleTokenMovements = squareButton.getToken().checkPosibleMoves(squareButton, this.gameView);
+			
 /*
  * 			Highlight the token selected and store the SquareButton as the
  * 			previouSquare until the player selects an empty square.
@@ -74,28 +73,16 @@ public class Controller implements ActionListener {
 			if (squareButton.getToken() == null && prevSquare != null) {
 
 /*
- * 			Storing the button that has been jumped. For the moment, this works for
- * 			Men tokens. *Further implementation to King tokens missing*
- * 
- * 		
-					
-		 		
- */			
-				SquareButton jumpedButton = gameView.squares[prevSquare.getRow()
-				                            								+ prevSquare.getToken().rowDirection()][prevSquare.getColumn()
-				                            																		+ getColDirection(prevSquare.getColumn(), squareButton.getColumn())];
-/*
- * 
  * 				Checking whether the movement is legal for Men or King. For the Kings it compares the next
  * 				movement proposed by the player with a list of possible moves determined by the previous SquareButton
  * 				selected. *Further implementation - Men should have a similar implementation.*
  * 
  */
-				if (prevSquare.getToken().getType() < 2 && prevSquare.getToken().isNormalMove(prevSquare, squareButton)
-					|| (prevSquare.getToken().getType() > 1) && prevSquare.getToken().checkPosibleMoves(prevSquare, this.gameView).contains(squareButton)) {
+//				if (this.prevSquare.getToken().checkPosibleMoves(prevSquare, this.gameView).contains(squareButton)) {
+				if (this.possibleTokenMovements.contains(squareButton)) {
 					
 //					Adding implementation for King's kills - Men will be implemented in the same way
-					if ((prevSquare.getToken().getType() > 1) && prevSquare.getToken().hasAKill(squareButton) != null) {
+					if (this.prevSquare.getToken().hasAKill(squareButton) != null) {
 						System.out.println("Hoooliiii");
 						prevSquare.getToken().hasAKill(squareButton).removeToken();
 					}
@@ -104,20 +91,11 @@ public class Controller implements ActionListener {
 					move(this.prevSquare);
 					
 				
-					if (possibleKingMoves != null) {
-						for(int i = 0; i < possibleKingMoves.size(); i++) {
-							possibleKingMoves.get(i).setBackground(Color.black);
+					if (possibleTokenMovements != null) {
+						for(int i = 0; i < possibleTokenMovements.size(); i++) {
+							possibleTokenMovements.get(i).setBackground(Color.black);
 						}
-						possibleKingMoves = null;
-					}
-				
-
-				} else if (prevSquare.getToken().getType() < 2 && jumpedButton.getToken() != null && prevSquare.getToken().isJumpMove(prevSquare, squareButton)) {
-					if (jumpedButton.getToken().getColour() != prevSquare.getToken().getColour()) {
-
-						place(squareButton);
-						jumpedButton.removeToken();
-						move(this.prevSquare);
+						possibleTokenMovements = null;
 					}
 				} 
 				
