@@ -9,8 +9,8 @@ public class Men implements Token {
 
 	Model model;
 	ImageIcon menIcon;
-	int colour;
 	HashMap<SquareButton, SquareButton> killerMovemenets; // Stores the location of the movement that can kill and the
+	int colour;
 															// location of that contains the killed token
 
 	public Men(int type) {

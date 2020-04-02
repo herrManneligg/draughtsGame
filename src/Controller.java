@@ -111,13 +111,18 @@ public class Controller implements ActionListener {
 		}
 
 //		Trying to check other buttons
-//		 else if (e.getSource() instanceof JButton) {
-//			JButton toolButton = (JButton)e.getSource();
-//			if (toolButton.getText().equals("Play")) {
-//			gameView.addInitialTokens();
-//			gameView.repaint();
-//			}
-//		 }
+		 else if (e.getSource() instanceof JButton) {
+			JButton toolButton = (JButton)e.getSource();
+			if (toolButton.getText().equals("Restart") || toolButton.getText().equals("Play")) {
+				removeAllTokens();
+				addInitialTokens();
+				this.prevSquare = null;
+				gameView.restart.setText("Restart");
+				if (this.possibleTokenMovements != null) {
+					this.possibleTokenMovements.clear();
+				}
+			}
+		 }
 
 	}
 
@@ -137,5 +142,26 @@ public class Controller implements ActionListener {
 
 	public int getColDirection(int prevCol, int nextCol) {
 		return nextCol < prevCol ? -1 : 1;
+	}
+	
+	public void addInitialTokens() {
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (i % 2 == 0 && j % 2 != 0) {
+					gameView.squares[i][j].setToken(new Men(0));
+				} else if (i % 2 != 0 && j % 2 == 0) {
+					gameView.squares[i][j].setToken(new Men(0));
+				} else {
+					gameView.squares[i + 5][j].setToken(new Men(1));
+				}
+			}
+		}
+	}
+	
+	public void removeAllTokens() {
+		for (SquareButton blackButton : gameView.blackButtons) {
+			blackButton.removeToken();
+		}
 	}
 }

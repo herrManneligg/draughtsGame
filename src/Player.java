@@ -1,19 +1,19 @@
 
 public class Player {
 	String name;
-	Token playerToken;
-	int tokensCounter;
+	int playerToken; // 0 = RED TOKENS, 1 = WHITE TOKENS
+	int tokensCounter; // There is 12 tokens for each player. This counts how many tokens each player has. Once it reaches 0, the player loses.
 	
 	public Player(String name) {
 		this.name = name;
 		this.tokensCounter = 12;
 	}
 
-	public Token getPlayerToken() {
+	public int getPlayerToken() {
 		return playerToken;
 	}
 
-	public void setPlayerToken(Token playerToken) {
+	public void setPlayerToken(int playerToken) {
 		this.playerToken = playerToken;
 	}
 
