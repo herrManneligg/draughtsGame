@@ -18,17 +18,20 @@ public class Server implements Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
-			Socket clientSocket = null;
+
+		if (clients.size() < 2) {
+			while (true) {
+				Socket clientSocket = null;
 // 			Possible add a limit of 2 clients
-			try {
-				clientSocket = server.accept();
-				System.out.println("New player connected");
-				ServerRunner client = new ServerRunner(clientSocket, this);
-				clients.add(client);
-				new Thread(client).start();
-			} catch (IOException e) {
-				e.printStackTrace();
+				try {
+					clientSocket = server.accept();
+					System.out.println("New player connected");
+					ServerRunner client = new ServerRunner(clientSocket, this);
+					clients.add(client);
+					new Thread(client).start();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

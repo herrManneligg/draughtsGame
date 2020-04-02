@@ -8,10 +8,6 @@ import javax.swing.*;
 public class View extends JFrame {
 	
 	
-
-	/**
-	 * 
-	 */
 	public JPanel window = new JPanel();
 	public SquareButton[][] squares = new SquareButton[8][8];
 	public List<SquareButton> blackButtons;
@@ -61,7 +57,6 @@ public class View extends JFrame {
 		tools.addSeparator();
 		tools.add(infoScreen, BorderLayout.PAGE_END);
 		this.add(tools, BorderLayout.PAGE_START);
-		
 	}
 
 	

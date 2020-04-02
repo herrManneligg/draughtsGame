@@ -56,7 +56,7 @@ public class Controller implements ActionListener {
 					}
 
 				}
-			
+
 				this.possibleTokenMovements = squareButton.getToken().checkPosibleMoves(squareButton, this.gameView);
 
 				/*
@@ -95,15 +95,17 @@ public class Controller implements ActionListener {
 					System.out.println(prevSquare.toString());
 					System.out.println(squareButton.toString());
 
-					try {
-						outputStream.writeObject(new MovementUpdate(prevSquare, squareButton));
-					} catch (IOException ex) {
-						ex.printStackTrace();
+					if (server != null) {
+
+						try {
+							outputStream.writeObject(new MovementUpdate(prevSquare, squareButton));
+						} catch (IOException ex) {
+							ex.printStackTrace();
+						}
 					}
 
 					place(squareButton);
 					remove(this.prevSquare);
-					
 
 					if (possibleTokenMovements != null) {
 						for (int i = 0; i < possibleTokenMovements.size(); i++) {
@@ -123,7 +125,6 @@ public class Controller implements ActionListener {
 			System.out.println("Move: " + "r: " + squareButton.getRow() + ", c: " + squareButton.getColumn() + "\n");
 		}
 
-//		Trying to check other buttons
 		else if (e.getSource() instanceof JButton) {
 			JButton toolButton = (JButton) e.getSource();
 			if (toolButton.getText().equals("Restart") || toolButton.getText().equals("Play")) {
@@ -135,17 +136,18 @@ public class Controller implements ActionListener {
 				if (this.possibleTokenMovements != null) {
 					this.possibleTokenMovements.clear();
 				}
+
 			} else if (toolButton.getText().equals("Connect")) {
 				connect();
-				
+
 				try {
-		            outputStream = new ObjectOutputStream(server.getOutputStream());
-		        }catch(IOException e1) {
-		            e1.printStackTrace();
-		        }
-				
-				ReadWorker rw = new ReadWorker(server,this);
-			    rw.execute();
+					outputStream = new ObjectOutputStream(server.getOutputStream());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+				ReadWorker rw = new ReadWorker(server, this);
+				rw.execute();
 			}
 		}
 
@@ -155,12 +157,11 @@ public class Controller implements ActionListener {
 		try {
 			server = new Socket("127.0.0.1", 8765);
 			System.out.println("Connected");
-			
+
 			this.gameView.connect.setEnabled(false);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private void placeKing(SquareButton kingSquare, int type) {
@@ -184,6 +185,10 @@ public class Controller implements ActionListener {
 
 	public int getColDirection(int prevCol, int nextCol) {
 		return nextCol < prevCol ? -1 : 1;
+	}
+
+	public View getView() {
+		return this.gameView;
 	}
 
 	public void addInitialTokens() {

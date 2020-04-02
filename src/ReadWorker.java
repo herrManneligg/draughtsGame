@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -16,7 +17,7 @@ public class ReadWorker extends SwingWorker<Void,Void> {
          
          try {
              inputStream = new ObjectInputStream(this.socket.getInputStream());
-         }catch(IOException e) {
+         } catch(IOException e) {
              e.printStackTrace();
          }
      }
@@ -29,7 +30,11 @@ public class ReadWorker extends SwingWorker<Void,Void> {
          
          try {
              while((move = (MovementUpdate)inputStream.readObject())!= null) {
-            	 this.parent.move(move.getPrevMovement(), move.getNextMovement());
+            	
+            	 SquareButton prev = (SquareButton) this.parent.getView().get_square_button()[move.getPrevSquare()[0]][move.getPrevSquare()[1]];
+            	 SquareButton next = (SquareButton) this.parent.getView().get_square_button()[move.getNextSquare()[0]][move.getNextSquare()[1]];
+            	 
+            	 this.parent.move(prev, next);
                  System.out.println(move);
              }
          }catch(ClassNotFoundException e) {
