@@ -7,6 +7,9 @@ import javax.swing.*;
 
 public class View extends JFrame {
 
+	/**
+	 * 
+	 */
 	public JPanel window = new JPanel();
 	public SquareButton[][] squares = new SquareButton[8][8];
 	public List<SquareButton> blackButtons;
@@ -26,6 +29,7 @@ public class View extends JFrame {
 		blackButtons = new ArrayList<>();
 		createBoard();
 		initialize();
+		this.control.addInitialTokens();
 	}
 
 	public void initialize() {
@@ -51,6 +55,7 @@ public class View extends JFrame {
 		restart.addActionListener(this.control);
 		tools.add(restart);
 		tools.add(resign);
+		connect.addActionListener(this.control);
 		tools.add(connect);
 		tools.addSeparator();
 		tools.add(infoScreen, BorderLayout.PAGE_END);

@@ -1,16 +1,19 @@
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.List;
-
 import javax.swing.JButton;
 
 public class Controller implements ActionListener {
 
 	private View gameView;
 	private SquareButton prevSquare;
+	private Socket server = null;
+	private ObjectOutputStream outputStream;
+
 	private List<SquareButton> possibleTokenMovements;
 
 	int row;
@@ -28,77 +31,87 @@ public class Controller implements ActionListener {
 
 			SquareButton squareButton = ((SquareButton) e.getSource());
 
-/*
- * 			The SquareButton is not null = the player selected a token.
- * 			*Further implementation; check if the currentPlayer selected their token*
- */
+			/*
+			 * The SquareButton is not null = the player selected a token. *Further
+			 * implementation; check if the currentPlayer selected their token*
+			 */
 			if (squareButton.getToken() != null) {
 
-/*
- * 			The player changes his mind and selects a different token.
- */
+				/*
+				 * The player changes his mind and selects a different token.
+				 */
 				if (this.prevSquare != null) {
 					this.prevSquare.setBackground(Color.black);
 					this.prevSquare = null;
 				}
-/*
- * 			If the player previously selected a king, the possible moves
- * 			are showed in green. This turns the squares back to black and
- * 			resets the possible moves list for the king.
- */
+				/*
+				 * If the player previously selected a king, the possible moves are showed in
+				 * green. This turns the squares back to black and resets the possible moves
+				 * list for the king.
+				 */
 				if (possibleTokenMovements != null) {
-					
-					for(int i = 0; i < possibleTokenMovements.size(); i++) {
+
+					for (int i = 0; i < possibleTokenMovements.size(); i++) {
 						this.possibleTokenMovements.get(i).setBackground(Color.black);
 					}
-					
+
 				}
-/*
- * 			///////////////////////////////////////////////////////////
- */
-				this.possibleTokenMovements = squareButton.getToken().checkPosibleMoves(squareButton, this.gameView);
 			
-/*
- * 			Highlight the token selected and store the SquareButton as the
- * 			previouSquare until the player selects an empty square.
- */
+				this.possibleTokenMovements = squareButton.getToken().checkPosibleMoves(squareButton, this.gameView);
+
+				/*
+				 * Highlight the token selected and store the SquareButton as the previouSquare
+				 * until the player selects an empty square.
+				 */
 				squareButton.setBackground(Color.yellow);
 				this.prevSquare = squareButton;
 			}
-/*
- * 			The player selects a new squareButton that it is empty. If the
- * 			previousSquare is not empty, it means that the player wants to
- * 			move the previous token to that new position.
- */
+			/*
+			 * The player selects a new squareButton that it is empty. If the previousSquare
+			 * is not empty, it means that the player wants to move the previous token to
+			 * that new position.
+			 */
 			if (squareButton.getToken() == null && prevSquare != null) {
 
-/*
- * 				Checking whether the movement is legal for Men or King. For the Kings it compares the next
- * 				movement proposed by the player with a list of possible moves determined by the previous SquareButton
- * 				selected. *Further implementation - Men should have a similar implementation.*
- * 
- */
+				/*
+				 * Checking whether the movement is legal for Men or King. For the Kings it
+				 * compares the next movement proposed by the player with a list of possible
+				 * moves determined by the previous SquareButton selected. *Further
+				 * implementation - Men should have a similar implementation.*
+				 * 
+				 */
 //				if (this.prevSquare.getToken().checkPosibleMoves(prevSquare, this.gameView).contains(squareButton)) {
 				if (this.possibleTokenMovements.contains(squareButton)) {
-					
+
 //					Adding implementation for King's kills - Men will be implemented in the same way
 					if (this.prevSquare.getToken().hasAKill(squareButton) != null) {
+
 						this.prevSquare.getToken().hasAKill(squareButton).removeToken();
 						this.prevSquare.getToken().getKillerMovemenets().clear();
+
 					} else if (!this.prevSquare.getToken().getKillerMovemenets().isEmpty()) {
 						this.prevSquare.getToken().getKillerMovemenets().clear();
 					}
-					
+					System.out.println(prevSquare.toString());
+					System.out.println(squareButton.toString());
+
+					try {
+						outputStream.writeObject(new MovementUpdate(prevSquare, squareButton));
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+
 					place(squareButton);
-					move(this.prevSquare);
-				
+					remove(this.prevSquare);
+					
+
 					if (possibleTokenMovements != null) {
-						for(int i = 0; i < possibleTokenMovements.size(); i++) {
+						for (int i = 0; i < possibleTokenMovements.size(); i++) {
 							possibleTokenMovements.get(i).setBackground(Color.black);
 						}
 						possibleTokenMovements = null;
 					}
-				} 
+				}
 			}
 			if (squareButton.getToken() != null && squareButton.getToken().getType() < 2) {
 				if (squareButton.getToken().getType() == 0 && squareButton.getRow() == 7) {
@@ -110,10 +123,11 @@ public class Controller implements ActionListener {
 			System.out.println("Move: " + "r: " + squareButton.getRow() + ", c: " + squareButton.getColumn() + "\n");
 		}
 
-//		Trying to check other buttons
-		 else if (e.getSource() instanceof JButton) {
-			JButton toolButton = (JButton)e.getSource();
+//		 Trying to check other buttons
+		else if (e.getSource() instanceof JButton) {
+			JButton toolButton = (JButton) e.getSource();
 			if (toolButton.getText().equals("Restart") || toolButton.getText().equals("Play")) {
+
 				removeAllTokens();
 				addInitialTokens();
 				this.prevSquare = null;
@@ -121,8 +135,29 @@ public class Controller implements ActionListener {
 				if (this.possibleTokenMovements != null) {
 					this.possibleTokenMovements.clear();
 				}
+			} else if (toolButton.getText().equals("Connect")) {
+				connect();
+				
+				try {
+		            outputStream = new ObjectOutputStream(server.getOutputStream());
+		        }catch(IOException e1) {
+		            e1.printStackTrace();
+		        }
+				ReadWorker rw = new ReadWorker(server,this);
+			    rw.execute();
 			}
-		 }
+		}
+
+	}
+
+	private void connect() {
+		try {
+			server = new Socket("127.0.0.1", 8765);
+			System.out.println("Connected");
+			this.gameView.connect.setEnabled(false);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -135,15 +170,20 @@ public class Controller implements ActionListener {
 		this.prevSquare.setBackground(Color.black);
 	}
 
-	public void move(SquareButton jbutton) {
+	public void remove(SquareButton jbutton) {
 		jbutton.removeToken();
 		this.prevSquare = null;
+	}
+
+	public void move(SquareButton prev, SquareButton next) {
+		next.setToken(prev.getToken());
+		prev.removeToken();
 	}
 
 	public int getColDirection(int prevCol, int nextCol) {
 		return nextCol < prevCol ? -1 : 1;
 	}
-	
+
 	public void addInitialTokens() {
 
 		for (int i = 0; i < 3; i++) {
@@ -158,7 +198,7 @@ public class Controller implements ActionListener {
 			}
 		}
 	}
-	
+
 	public void removeAllTokens() {
 		for (SquareButton blackButton : gameView.blackButtons) {
 			blackButton.removeToken();

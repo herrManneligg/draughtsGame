@@ -1,11 +1,16 @@
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.ImageIcon;
 
-public class King implements Token {
+public class King implements Token, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Model model;
 	ImageIcon kingIcon;
 	int colour;

@@ -24,21 +24,21 @@ public class ServerRunner implements Runnable {
      public void run() {
          // receive messages
          try {
-//             Message message = null;
-//             while((message = (Message)inputStream.readObject())!= null) {
-//             this.parent.transmit(message);
-//             }
+        	 MovementUpdate message = null;
+             while((message = (MovementUpdate)inputStream.readObject())!= null) {
+             this.parent.transmit(message);
+             }
              inputStream.close();
-//         }catch(ClassNotFoundException e) {
-//             e.printStackTrace();
+         }catch(ClassNotFoundException e) {
+             e.printStackTrace();
          }catch(IOException e) {
              e.printStackTrace();
          }
      }
      
-     public void transmitMovement(SquareButton squareButton) { //Message prevs
+     public void transmitMovement(MovementUpdate movUpdate) { //Message prevs
          try {
-             outputStream.writeObject(squareButton);
+             outputStream.writeObject(movUpdate);
          }catch(IOException e) {
              e.printStackTrace();
          }

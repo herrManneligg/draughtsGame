@@ -1,7 +1,12 @@
+
 import javax.swing.JButton;
 
 public class SquareButton extends JButton {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	int row;
 	int column;
 	Token token;
@@ -48,5 +53,9 @@ public class SquareButton extends JButton {
 	public void removeToken() {
 		this.setIcon(null);
 		this.token = null;
+	}
+	
+	public String toString() {
+		return "I am square button " + "(" + this.row + ", " + column + ")";
 	}
 }

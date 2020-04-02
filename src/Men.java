@@ -1,12 +1,17 @@
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 
-public class Men implements Token {
+public class Men implements Token, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Model model;
 	ImageIcon menIcon;
 	HashMap<SquareButton, SquareButton> killerMovemenets; // Stores the location of the movement that can kill and the

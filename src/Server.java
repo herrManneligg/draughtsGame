@@ -34,10 +34,10 @@ public class Server implements Runnable {
 
 	}
 
-	public void transmit(SquareButton squareButton) {
+	public void transmit(MovementUpdate newMoves) {
 		for (ServerRunner c : clients) {
 			if (c != null) {
-				c.transmitMovement(squareButton);
+				c.transmitMovement(newMoves);
 			}
 		}
 	}
