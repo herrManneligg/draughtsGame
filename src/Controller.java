@@ -20,7 +20,7 @@ public class Controller implements ActionListener {
 	int column;
 
 	public Controller(View view) {
-		gameView = view;
+		this.gameView = view;
 		prevSquare = null;
 	}
 
@@ -123,7 +123,7 @@ public class Controller implements ActionListener {
 			System.out.println("Move: " + "r: " + squareButton.getRow() + ", c: " + squareButton.getColumn() + "\n");
 		}
 
-//		 Trying to check other buttons
+//		Trying to check other buttons
 		else if (e.getSource() instanceof JButton) {
 			JButton toolButton = (JButton) e.getSource();
 			if (toolButton.getText().equals("Restart") || toolButton.getText().equals("Play")) {
@@ -143,6 +143,7 @@ public class Controller implements ActionListener {
 		        }catch(IOException e1) {
 		            e1.printStackTrace();
 		        }
+				
 				ReadWorker rw = new ReadWorker(server,this);
 			    rw.execute();
 			}
@@ -154,6 +155,7 @@ public class Controller implements ActionListener {
 		try {
 			server = new Socket("127.0.0.1", 8765);
 			System.out.println("Connected");
+			
 			this.gameView.connect.setEnabled(false);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -189,11 +191,11 @@ public class Controller implements ActionListener {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (i % 2 == 0 && j % 2 != 0) {
-					gameView.squares[i][j].setToken(new Men(0));
+					this.gameView.squares[i][j].setToken(new Men(0));
 				} else if (i % 2 != 0 && j % 2 == 0) {
-					gameView.squares[i][j].setToken(new Men(0));
+					this.gameView.squares[i][j].setToken(new Men(0));
 				} else {
-					gameView.squares[i + 5][j].setToken(new Men(1));
+					this.gameView.squares[i + 5][j].setToken(new Men(1));
 				}
 			}
 		}

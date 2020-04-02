@@ -20,7 +20,7 @@ public class Server implements Runnable {
 	public void run() {
 		while (true) {
 			Socket clientSocket = null;
-// Possible add a limit of 2 clients
+// 			Possible add a limit of 2 clients
 			try {
 				clientSocket = server.accept();
 				System.out.println("New player connected");

@@ -13,6 +13,7 @@ public class ReadWorker extends SwingWorker<Void,Void> {
      public ReadWorker(Socket s, Controller parent) {
          this.socket = s;
          this.parent = parent;
+         
          try {
              inputStream = new ObjectInputStream(this.socket.getInputStream());
          }catch(IOException e) {
@@ -28,8 +29,8 @@ public class ReadWorker extends SwingWorker<Void,Void> {
          
          try {
              while((move = (MovementUpdate)inputStream.readObject())!= null) {
+            	 this.parent.move(move.getPrevMovement(), move.getNextMovement());
                  System.out.println(move);
-                 this.parent.move(move.getPrevMovement(), move.getNextMovement());
              }
          }catch(ClassNotFoundException e) {
              e.printStackTrace();

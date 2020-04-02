@@ -6,6 +6,8 @@ import java.util.List;
 import javax.swing.*;
 
 public class View extends JFrame {
+	
+	
 
 	/**
 	 * 
@@ -21,7 +23,6 @@ public class View extends JFrame {
 	public JLabel infoScreen;
 	public Model token = new Model();
 	
-
 	public Controller control;
 
 	public View() {
@@ -91,7 +92,6 @@ public class View extends JFrame {
 			}
 		}
 	}
-	
 
 	public JButton[][] get_square_button() {
 		return squares;
@@ -104,4 +104,5 @@ public class View extends JFrame {
 				new View();
 			}});
 	}
+	
 }
