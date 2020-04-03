@@ -9,7 +9,7 @@ import javax.swing.JButton;
 
 public class Controller implements ActionListener {
 
-	private Game game;
+	private Game PlayerGame;
 	private Client gameView;
 	private Socket server = null;
 	private SquareButton prevSquare;
@@ -22,13 +22,13 @@ public class Controller implements ActionListener {
 
 	public Controller(Client view) {
 		this.gameView = view;
-		prevSquare = null;
+		this.prevSquare = null;
 	}
 
 	public void actionPerformed(ActionEvent e) {
 
 //		Checking whether the clicked button is an instance of a SquareButton.
-		if (e.getSource() instanceof SquareButton && this.game.currentPlayerTurn == this.game.player) {
+		if (e.getSource() instanceof SquareButton && this.PlayerGame.currentPlayerTurn == this.PlayerGame.player) {
 
 			SquareButton squareButton = ((SquareButton) e.getSource());
 
@@ -37,7 +37,7 @@ public class Controller implements ActionListener {
 			 * implementation; check if the currentPlayer selected their token*
 			 */
 			
-			if (squareButton.getToken() != null && squareButton.getToken().getColour() == this.game.player.getPlayerToken()) {
+			if (squareButton.getToken() != null && squareButton.getToken().getColour() == this.PlayerGame.player.getPlayerToken()) {
 
 				/*
 				 * The player changes his mind and selects a different token.
@@ -56,7 +56,6 @@ public class Controller implements ActionListener {
 					for (int i = 0; i < possibleTokenMovements.size(); i++) {
 						this.possibleTokenMovements.get(i).setBackground(Color.black);
 					}
-
 				}
 
 				this.possibleTokenMovements = squareButton.getToken().checkPosibleMoves(squareButton, this.gameView);
@@ -109,7 +108,6 @@ public class Controller implements ActionListener {
 
 					place(squareButton);
 					remove(this.prevSquare);
-					
 					passRound();
 
 					if (possibleTokenMovements != null) {
@@ -138,10 +136,10 @@ public class Controller implements ActionListener {
 				addInitialTokens();
 				this.prevSquare = null;
 				gameView.restart.setText("Restart");
+				
 				if (this.possibleTokenMovements != null) {
 					this.possibleTokenMovements.clear();
 				}
-				
 
 			} else if (toolButton.getText().equals("Connect")) {
 				this.gameView.infoScreen.setText("Connecting...");
@@ -156,14 +154,24 @@ public class Controller implements ActionListener {
 
 				ReadWorker rw = new ReadWorker(server, this);
 				rw.execute();
+				enableButtons();
+				startedGameButtons();
 
 			} else if (toolButton.getActionCommand().equals("Player")) {
-				this.game = new Game(toolButton.getText(), toolButton.getText().equals("Player 1") ? 0 : 1);
+				
+				this.PlayerGame = new Game(toolButton.getText(), toolButton.getText().equals("Player 1") ? 0 : 1);
 				this.gameView.infoScreen.setText("Welcome " + toolButton.getText() + "!");
-				this.game.setPlayerTurn();
+				this.PlayerGame.setPlayerTurn();
 				enableButtons();
-				System.out.println(game.player);
-			} 
+				System.out.println(PlayerGame.player);
+				addInitialTokens();
+				
+			} else if (toolButton.getActionCommand().equals("CPU")) {
+				Game CPUgame = new Game(toolButton.getText(), this.PlayerGame.player.getPlayerToken() == 0 ? 1 : 0, gameView, this);
+				this.gameView.infoScreen.setText("Mode: agaisnt CPU");
+				enableButtons();
+				startedGameButtons();
+			}
 		}
 	}
 
@@ -178,7 +186,7 @@ public class Controller implements ActionListener {
 		} catch (IOException e) {
 			
 			e.printStackTrace();
-			this.gameView.infoScreen.setText("Unnable to connect...");
+			this.gameView.infoScreen.setText("Unnable to connect. Server not responding...");
 		}
 	}
 
@@ -186,7 +194,7 @@ public class Controller implements ActionListener {
 		kingSquare.setToken(new King(type));
 	}
 
-	private void place(SquareButton nextLoc) {
+	public void place(SquareButton nextLoc) {
 		nextLoc.setToken(this.prevSquare.getToken());
 		this.prevSquare.setBackground(Color.black);
 	}
@@ -227,15 +235,24 @@ public class Controller implements ActionListener {
 	}
 	
 	public void enableButtons() {
-		gameView.resign.setEnabled(true);
-		gameView.restart.setEnabled(true);
+
 		gameView.connect.setEnabled(true);
 		gameView.player1.setEnabled(false);
 		gameView.player2.setEnabled(false);
+		gameView.player1.setVisible(false);
+		gameView.player2.setVisible(false);
+		gameView.CPU.setEnabled(true);
+	}
+	
+	public void startedGameButtons() {
+		gameView.connect.setEnabled(false);
+		gameView.CPU.setEnabled(false);
+		gameView.resign.setEnabled(true);
+		gameView.restart.setEnabled(true);
 	}
 	
 	public void passRound() {
-		this.game.nextRound();
-		this.game.setPlayerTurn();
+		this.PlayerGame.nextRound();
+		this.PlayerGame.setPlayerTurn();
 	}
 }
