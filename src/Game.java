@@ -1,14 +1,12 @@
 
 public class Game {
 
-	Player white;
-	Player black;
-	Player currentPlayerTurn;
 	int round;
+	Player player;
+	Player currentPlayerTurn;
 
-	public Game(String name, String name2) {
-		this.white = new Player(name);
-		this.black = new Player(name2);
+	public Game(String name, int colour) {
+		this.player = new Player(name, colour);
 		this.round = 0;
 	}
 
@@ -21,7 +19,7 @@ public class Game {
 	}
 
 	public void nextRound() {
-		this.round += this.round;
+		this.round = this.round + 1;
 	}
 
 	public void resetRound() {
@@ -33,18 +31,18 @@ public class Game {
 	}
 	
 	public void setPlayerTurn() {
-		if (this.round % 2 == 0) {
-			this.white = currentPlayerTurn;
-		} else {
-			this.black = currentPlayerTurn;
+		if (this.round % 2 == 0 && this.player.getPlayerToken() == 0) {
+			this.currentPlayerTurn = this.player;
+		} else if (this.round % 2 != 0 && this.player.getPlayerToken() != 0) {
+			this.currentPlayerTurn = this.player;
 		}
 	}
-	
+
 	public void checkLoser() {
-		if (this.white.getTokensCounter() == 0) {
-			System.out.println("Player 1 loses. \nPlayer 2 wins.");
-		} else if(this.black.getTokensCounter() == 0) {
-			System.out.println("Player 2 loses. \nPlayer 1 wins.");
+		if (this.player.getTokensCounter() == 0) {
+			System.out.println("Player 1 wins.");
+		} else if(this.player.getTokensCounter() == 0) {
+			System.out.println("Player 2 wins.");
 		}
 	}
 }

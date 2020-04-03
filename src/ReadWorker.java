@@ -35,6 +35,7 @@ public class ReadWorker extends SwingWorker<Void,Void> {
             	 SquareButton next = (SquareButton) this.parent.getView().get_square_button()[move.getNextSquare()[0]][move.getNextSquare()[1]];
             	 
             	 this.parent.move(prev, next);
+            	 this.parent.passRound();
                  System.out.println(move);
              }
          }catch(ClassNotFoundException e) {

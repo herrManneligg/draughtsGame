@@ -5,28 +5,31 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
-public class View extends JFrame {
+public class Client extends JFrame {
 	
 	
 	public JPanel window = new JPanel();
+	public JPanel board = new JPanel(new GridLayout(8, 8));
+	public JLabel infoScreen;
+	public JToolBar tools = new JToolBar();
+	
+	public JButton connect = new JButton("Connect");
+	public JButton resign = new JButton("Resign");
+	public JButton restart = new JButton("Play");
+	public JButton player1 = new JButton("Player 1");
+	public JButton player2 = new JButton("Player 2");
+
 	public SquareButton[][] squares = new SquareButton[8][8];
 	public List<SquareButton> blackButtons;
-	public JPanel board = new JPanel(new GridLayout(8, 8));
-	public JToolBar tools = new JToolBar();
-	public JButton restart = new JButton("Play");
-	public JButton resign = new JButton("Resign");
-	public JButton connect = new JButton("Connect");
-	public JLabel infoScreen;
 	public Model token = new Model();
 	
 	public Controller control;
 
-	public View() {
+	public Client() {
 		this.control = new Controller(this);
 		blackButtons = new ArrayList<>();
 		createBoard();
 		initialize();
-		this.control.addInitialTokens();
 	}
 
 	public void initialize() {
@@ -42,23 +45,33 @@ public class View extends JFrame {
 		this.setVisible(true);
 		this.setResizable(false);
 
-		tools.addSeparator();
 		tools.setFloatable(false);
 		tools.setBackground(Color.darkGray);
+		
+		restart.addActionListener(this.control);
+		restart.setEnabled(false);
+		tools.add(restart);
+		resign.setEnabled(false);
+		tools.add(resign);
+		
+		connect.addActionListener(this.control);
+		connect.setEnabled(false);
+		tools.add(connect);
+		
+		player1.addActionListener(this.control);
+		player2.addActionListener(this.control);
+		player1.setActionCommand("Player");
+		player2.setActionCommand("Player");
+		tools.add(player1);
+		tools.add(player2);
 
+		tools.addSeparator();
 		infoScreen = new JLabel("Let's play!");
 		infoScreen.setForeground(Color.white);
-		restart.setEnabled(true);
-		restart.addActionListener(this.control);
-		tools.add(restart);
-		tools.add(resign);
-		connect.addActionListener(this.control);
-		tools.add(connect);
-		tools.addSeparator();
 		tools.add(infoScreen, BorderLayout.PAGE_END);
+		
 		this.add(tools, BorderLayout.PAGE_START);
 	}
-
 	
 	private void createBoard() {
 
@@ -69,20 +82,20 @@ public class View extends JFrame {
 				button.setPreferredSize(new Dimension(9, 9));
 
 				if ((j % 2 == 1 && i % 2 == 1) || (j % 2 == 0 && i % 2 == 0)) {
+				
 					button.setBackground(Color.WHITE);
 					button.setEnabled(false);
+
 				} else {
+					
 					button.setBackground(Color.BLACK);
 					blackButtons.add(button);
 				}
+				
 				button.setVisible(true);
-				squares[i][j] = button;
 				button.addActionListener(this.control);
-			}
-		}
-
-		for (int i = 0; i < squares.length; i++) {
-			for (int j = 0; j < squares[i].length; j++) {
+				
+				squares[i][j] = button;
 				board.add(squares[i][j]);
 			}
 		}
@@ -93,10 +106,9 @@ public class View extends JFrame {
 	}
 	
 	public static void main(String[] args) throws IOException {
-
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				new View();
+				new Client();
 			}});
 	}
 	

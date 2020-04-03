@@ -9,9 +9,10 @@ import javax.swing.JButton;
 
 public class Controller implements ActionListener {
 
-	private View gameView;
-	private SquareButton prevSquare;
+	private Game game;
+	private Client gameView;
 	private Socket server = null;
+	private SquareButton prevSquare;
 	private ObjectOutputStream outputStream;
 
 	private List<SquareButton> possibleTokenMovements;
@@ -19,7 +20,7 @@ public class Controller implements ActionListener {
 	int row;
 	int column;
 
-	public Controller(View view) {
+	public Controller(Client view) {
 		this.gameView = view;
 		prevSquare = null;
 	}
@@ -27,7 +28,7 @@ public class Controller implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 //		Checking whether the clicked button is an instance of a SquareButton.
-		if (e.getSource() instanceof SquareButton) {
+		if (e.getSource() instanceof SquareButton && this.game.currentPlayerTurn == this.game.player) {
 
 			SquareButton squareButton = ((SquareButton) e.getSource());
 
@@ -35,7 +36,8 @@ public class Controller implements ActionListener {
 			 * The SquareButton is not null = the player selected a token. *Further
 			 * implementation; check if the currentPlayer selected their token*
 			 */
-			if (squareButton.getToken() != null) {
+			
+			if (squareButton.getToken() != null && squareButton.getToken().getColour() == this.game.player.getPlayerToken()) {
 
 				/*
 				 * The player changes his mind and selects a different token.
@@ -71,7 +73,7 @@ public class Controller implements ActionListener {
 			 * is not empty, it means that the player wants to move the previous token to
 			 * that new position.
 			 */
-			if (squareButton.getToken() == null && prevSquare != null) {
+			else if (squareButton.getToken() == null && prevSquare != null) {
 
 				/*
 				 * Checking whether the movement is legal for Men or King. For the Kings it
@@ -92,6 +94,7 @@ public class Controller implements ActionListener {
 					} else if (!this.prevSquare.getToken().getKillerMovemenets().isEmpty()) {
 						this.prevSquare.getToken().getKillerMovemenets().clear();
 					}
+					
 					System.out.println(prevSquare.toString());
 					System.out.println(squareButton.toString());
 
@@ -106,6 +109,8 @@ public class Controller implements ActionListener {
 
 					place(squareButton);
 					remove(this.prevSquare);
+					
+					passRound();
 
 					if (possibleTokenMovements != null) {
 						for (int i = 0; i < possibleTokenMovements.size(); i++) {
@@ -136,10 +141,13 @@ public class Controller implements ActionListener {
 				if (this.possibleTokenMovements != null) {
 					this.possibleTokenMovements.clear();
 				}
+				
 
 			} else if (toolButton.getText().equals("Connect")) {
+				this.gameView.infoScreen.setText("Connecting...");
+				
 				connect();
-
+				
 				try {
 					outputStream = new ObjectOutputStream(server.getOutputStream());
 				} catch (IOException e1) {
@@ -148,19 +156,29 @@ public class Controller implements ActionListener {
 
 				ReadWorker rw = new ReadWorker(server, this);
 				rw.execute();
-			}
-		}
 
+			} else if (toolButton.getActionCommand().equals("Player")) {
+				this.game = new Game(toolButton.getText(), toolButton.getText().equals("Player 1") ? 0 : 1);
+				this.gameView.infoScreen.setText("Welcome " + toolButton.getText() + "!");
+				this.game.setPlayerTurn();
+				enableButtons();
+				System.out.println(game.player);
+			} 
+		}
 	}
 
 	private void connect() {
+		
 		try {
+			
 			server = new Socket("127.0.0.1", 8765);
-			System.out.println("Connected");
-
+			this.gameView.infoScreen.setText("Connected!");
 			this.gameView.connect.setEnabled(false);
+			
 		} catch (IOException e) {
+			
 			e.printStackTrace();
+			this.gameView.infoScreen.setText("Unnable to connect...");
 		}
 	}
 
@@ -187,21 +205,17 @@ public class Controller implements ActionListener {
 		return nextCol < prevCol ? -1 : 1;
 	}
 
-	public View getView() {
+	public Client getView() {
 		return this.gameView;
 	}
 
 	public void addInitialTokens() {
 
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 8; j++) {
-				if (i % 2 == 0 && j % 2 != 0) {
-					this.gameView.squares[i][j].setToken(new Men(0));
-				} else if (i % 2 != 0 && j % 2 == 0) {
-					this.gameView.squares[i][j].setToken(new Men(0));
-				} else {
-					this.gameView.squares[i + 5][j].setToken(new Men(1));
-				}
+		for (SquareButton blackButton : gameView.blackButtons) {
+			if (blackButton.row < 3) {
+				blackButton.setToken(new Men(0));
+			} else if (blackButton.row > 4) {
+				blackButton.setToken(new Men(1));
 			}
 		}
 	}
@@ -210,5 +224,18 @@ public class Controller implements ActionListener {
 		for (SquareButton blackButton : gameView.blackButtons) {
 			blackButton.removeToken();
 		}
+	}
+	
+	public void enableButtons() {
+		gameView.resign.setEnabled(true);
+		gameView.restart.setEnabled(true);
+		gameView.connect.setEnabled(true);
+		gameView.player1.setEnabled(false);
+		gameView.player2.setEnabled(false);
+	}
+	
+	public void passRound() {
+		this.game.nextRound();
+		this.game.setPlayerTurn();
 	}
 }

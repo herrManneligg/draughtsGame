@@ -2,10 +2,6 @@ import java.io.Serializable;
 
 public class MovementUpdate implements Serializable {
 	
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7901044153140876531L;
 	private int[] prevMovementCoords = new int[2];
 	private int[] nextMovementCoords = new int[2];

@@ -8,34 +8,30 @@ import javax.swing.ImageIcon;
 
 public class Men implements Token, Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	Model model;
-	ImageIcon menIcon;
-	HashMap<SquareButton, SquareButton> killerMovemenets; // Stores the location of the movement that can kill and the
 	int colour;
+	Model model;
+	ImageIcon tokenIcon;
+	HashMap<SquareButton, SquareButton> killerMovemenets; // Stores the location of the movement that can kill and the
+	private static final long serialVersionUID = 1L;
 															// location of that contains the killed token
 
 	public Men(int type) {
-
 		this.colour = type;
-		this.killerMovemenets = new HashMap<>();
 		this.model = new Model();
+		this.killerMovemenets = new HashMap<>();
 		setImage();
 	}
 
 	public void setImage() {
 		if (this.colour == 0) {
-			this.menIcon = model.getRed();
+			this.tokenIcon = model.getRed();
 		} else if (this.colour == 1) {
-			this.menIcon = model.getWhite();
+			this.tokenIcon = model.getWhite();
 		}
 	}
 
 	public int getColour() {
-		return this.colour == 0 ? 0 : 1;
+		return this.colour == 0 ? 0 : 1; // RED = 0 : WHITE = 1
 	}
 
 	public int getType() {
@@ -48,7 +44,7 @@ public class Men implements Token, Serializable {
 
 	@Override
 	public ImageIcon getTokenIcon() {
-		return this.menIcon;
+		return this.tokenIcon;
 	}
 
 	public int rowDirection() {
@@ -59,12 +55,13 @@ public class Men implements Token, Serializable {
 		return killerMovemenets;
 	}
 	
-	public void setKillerMovemenets(HashMap<SquareButton, SquareButton> killerMovemenets) {
-		this.killerMovemenets = killerMovemenets;
-	}
-
 	@Override
-	public List<SquareButton> checkPosibleMoves(SquareButton pieceLocation, View gameView) {
+	public SquareButton hasAKill(SquareButton iskillingPosition) {
+		return this.killerMovemenets.containsKey(iskillingPosition) ? this.killerMovemenets.get(iskillingPosition): null;
+	}
+	
+	@Override
+	public List<SquareButton> checkPosibleMoves(SquareButton pieceLocation, Client gameView) {
 
 		List<SquareButton> possibleMoves = new ArrayList<>();
 		int rowStep = pieceLocation.row + rowDirection();
@@ -74,15 +71,14 @@ public class Men implements Token, Serializable {
 		SquareButton jumpButton;
 
 		if (pieceLocation.column - 1 >= 0) {
+			
 			leftSquare = gameView.squares[rowStep][pieceLocation.column - 1];
 			if (leftSquare.isOccupied() == false) {
 
 				possibleMoves.add(leftSquare);
 				leftSquare.setBackground(Color.green);
-				System.out.println("A");
 
-			} else if ((pieceLocation.column - 2) >= 0 && (rowStep + rowDirection() <= 7)
-					&& (rowStep + rowDirection() >= 0)) {
+			} else if ((pieceLocation.column - 2) >= 0 && (rowStep + rowDirection() <= 7) && (rowStep + rowDirection() >= 0)) {
 
 				jumpButton = gameView.squares[rowStep + rowDirection()][pieceLocation.column - 2];
 
@@ -92,7 +88,6 @@ public class Men implements Token, Serializable {
 					possibleMoves.add(jumpButton);
 					this.killerMovemenets.put(jumpButton, leftSquare);
 					jumpButton.setBackground(Color.RED);
-					System.out.println("B");
 				}
 			}
 		}
@@ -105,10 +100,8 @@ public class Men implements Token, Serializable {
 
 				possibleMoves.add(rightSquare);
 				rightSquare.setBackground(Color.green);
-				System.out.println("C");
 				
-			} else if ((pieceLocation.column + 2) < 8 && (rowStep + rowDirection() <= 7)
-					&& (rowStep + rowDirection() >= 0)) {
+			} else if ((pieceLocation.column + 2) < 8 && (rowStep + rowDirection() <= 7) && (rowStep + rowDirection() >= 0)) {
 
 				jumpButton = gameView.squares[rowStep + rowDirection()][pieceLocation.column + 2];
 
@@ -117,16 +110,10 @@ public class Men implements Token, Serializable {
 					possibleMoves.add(jumpButton);
 					this.killerMovemenets.put(jumpButton, rightSquare);
 					jumpButton.setBackground(Color.RED);
-					System.out.println("D");
 				}
 			}
 		}
 
 		return possibleMoves;
-	}
-
-	@Override
-	public SquareButton hasAKill(SquareButton iskillingPosition) {
-		return this.killerMovemenets.containsKey(iskillingPosition) ? this.killerMovemenets.get(iskillingPosition): null;
 	}
 }
